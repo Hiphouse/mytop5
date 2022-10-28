@@ -3,13 +3,14 @@
 }
 
 .main {
-  min-height: 100vh;
-  padding: 4rem 0;
+  min-height: 50vh;
+  padding: .5rem 0;
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: 0 0;
 }
 
 .footer {
@@ -127,3 +128,89 @@
     filter: invert(1);
   }
 }
+.login {
+  display: flex;
+  justify-content: flex-end;
+  width: 90%;
+}
+
+#loginLink {
+  color: blue;
+  text-decoration: underline;
+  
+}
+
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-template-areas:
+  "movies movies . shows shows"
+  "movies movies . shows shows"
+  ". . songs . ."
+  "books books . artists artists"
+  "books books . artists artists";
+  align-items: center;
+  justify-items: center;
+}
+
+
+
+.books, .movies, .shows, .songs, .artists {
+  font-size: 32px;
+  border: 1px solid rgb(255, 255, 255);
+  padding: 1rem;
+  border-radius: 50%;
+  background-color: red;
+  color: rgb(255, 255, 255);
+}
+
+.books, .booksSelected {
+  grid-area: books;
+}
+
+.movies, .moviesSelected {
+ grid-area: movies;
+}
+
+.shows, .showsSelected {
+  grid-area: shows;
+}
+
+.songs, .songsSelected {
+  grid-area: songs;
+}
+
+.artists, .artistsSelected {
+  grid-area: artists;
+}
+
+.artists:hover, .movies:hover, .books:hover, .songs:hover, .shows:hover{
+  cursor: pointer;
+  background-color: rgb(216, 219, 81);
+}
+
+.artistsSelected:hover, .moviesSelected:hover, .booksSelected, .songsSelected:hover, .showsSelected:hover {
+  cursor: pointer;
+  background-color: rgb(216, 219, 81);
+}
+
+.artistsSelected, .moviesSelected, .booksSelected, .songsSelected, .showsSelected {
+  font-size: 32px;
+  border: 1px solid rgb(255, 255, 255);
+  padding: 1rem;
+  border-radius: 50%;
+  background-color: rgb(145, 233, 13);
+  color: rgb(255, 255, 255);
+}
+
+.next{
+  width: 70%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+
+
+
