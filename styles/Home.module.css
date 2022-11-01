@@ -190,10 +190,10 @@
   background-color: rgb(216, 219, 81);
 }
 
-.artistsSelected:hover, .moviesSelected:hover, .booksSelected, .songsSelected:hover, .showsSelected:hover {
+/* .artistsSelected:hover, .moviesSelected:hover, .booksSelected, .songsSelected:hover, .showsSelected:hover {
   cursor: pointer;
   background-color: rgb(216, 219, 81);
-}
+} */
 
 .artistsSelected, .moviesSelected, .booksSelected, .songsSelected, .showsSelected {
   font-size: 32px;
