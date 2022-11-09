@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Image from 'next/image'
+import styles from '../../styles/movies.module.css'
 interface Movie {
     adult: boolean,
     backdrop_path: string,
@@ -17,6 +18,12 @@ interface Movie {
     vote_average: number,
     vote_count: number
 }
+interface SelectedMovie {
+    id: number,
+    title: string,
+    posterPath: string,
+    overview: string
+}
 
 
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
@@ -27,20 +34,25 @@ export default function MoviesSelect(props: any) {
     const [resultMovies, setResultMovies] = useState<[]>([]);
     const [favMovies, setFaveMovies] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    useEffect( () => {
-        
+    const [isFetching, setIsFetching] = useState(false);
+    const [selectedMovies, setSelectedMovies] = useState<SelectedMovie[]>([])
+    const [nextCategory, setNextCategory] = useState<string>('')
+    useEffect(() => {
+
         const savedCategories = localStorage.getItem("categories")
         let categories: string[] = [];
         if (typeof savedCategories === 'string') categories = JSON.parse(savedCategories);
         console.log(categories)
-        
+
         categories = categories.slice(1, categories.length)
         console.log('categories after removing first idx: ', categories);
+        setNextCategory(categories[0]);
+        console.log('next category = ' + nextCategory);
         window.localStorage.setItem('categories', JSON.stringify(categories))
     }, [])
 
     useEffect(() => {
-        const url:string = `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}`
+        const url: string = `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}`
         const fetchData = async () => {
             const data = await fetch(url);
             const json = await data.json();
@@ -49,100 +61,162 @@ export default function MoviesSelect(props: any) {
             console.log('popular movies in async use effect: ', popularMovies)
         }
         fetchData()
-        .catch(console.error)
+            .catch(console.error)
         return (() => {
             console.log('popular movies on update: ', popularMovies)
         })
     }, [])
 
     useEffect(() => {
+        if (formInputData === undefined) return;
+        console.log('use Effect for input triggered')
         const url = `https://api.themoviedb.org/3/search/movie?query=${formInputData}&api_key=${API_KEY}&page=1`
         console.log(formInputData)
-        
+
         const getFormQuery = setTimeout(() => {
             fetch(url)
-            .then(res => res.json())
-            .then(data => {
-                if (data.length !== 0){
+                .then(res => res.json())
+                .then(data => {
+                    if (isFetching) {
+                        setIsFetching(!isFetching)
+                        console.log(data)
+                        setFormInputData(data.results);
+                        setPopularMovies(data.results);
+                        console.log(popularMovies)
+                    }
+                })
+        }, 100)
 
-                    console.log(data)
-                    setFormInputData(data.results);
-                    setPopularMovies(data.results);
-                    console.log(popularMovies)
-                }
-            })
-        }, 2000)
-        
         return (() => {
             clearTimeout(getFormQuery)
+            setIsFetching(!isFetching)
         })
-       
+
     }, [formInputData])
 
-    
+
     const router = useRouter()
 
-    
 
-    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+
+    const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const target = e.target as HTMLFormElement;
         console.log(target.value)
         setFormInputData(target.value)
-    }
-    const getPopularMovies = async () => {
-        
-        const url:string = `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}`
-        const res = await fetch(url);
-        const data = await res.json();
-        return data;
-        
-    }
-   
-    
-    const Movies = ():null | JSX.Element => {
-        if (popularMovies.length === 0) {
-          // console.log('Movies componennt boutta return null')
-          return null;
+    };
+
+    //prevents refresh when hitting enter on form
+    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log("refresh prevented on enter")
+    };
+
+    const addMovie = (movie: Movie) => {
+        if (selectedMovies.length >= 5) return;
+        console.log('add movie triggered')
+        console.log(movie)
+        const selection: SelectedMovie = {
+            id: movie.id,
+            title: movie.original_title,
+            posterPath: movie.poster_path,
+            overview: movie.overview
         }
-        console.log('here da pop movies dawg', popularMovies)
+        let currSelectedMovies = selectedMovies.slice();
+        const isIncluded = currSelectedMovies.filter((currMovies) => movie.id === currMovies.id)
+
+        if (isIncluded.length === 0) {
+
+            currSelectedMovies.push(selection);
+            setSelectedMovies(currSelectedMovies);
+            console.log("slected movies state after add" + selectedMovies);
+        }
+        return;
+    }
+    const removeMovie = (movie: number) => {
+        console.log('remove movie triggered')
+        console.log(movie)
+        let currSelectedMovies = selectedMovies.slice();
+        currSelectedMovies = currSelectedMovies.filter((currMovie) => currMovie.id !== movie)
+        setSelectedMovies(currSelectedMovies);
+
+    }
+
+    const Movies = (): null | JSX.Element => {
+        if (popularMovies === undefined) {
+            // console.log('Movies componennt boutta return null')
+            return null;
+        }
+
+
+
+
         let movies;
-        if (popularMovies.length !== 0){
-            console.log('popular movies in movies function: ', popularMovies)
-             movies = popularMovies.map((movie:Movie, index) =>{ 
+        if (popularMovies.length !== 0) {
+
+            movies = popularMovies.map((movie: Movie, index) => {
                 console.log(movie.original_title)
                 const imgPath = `https://image.tmdb.org/t/p/w300_and_h450_bestv2${movie.poster_path}`
                 return (
-
+                    <>
                     <div key={index}>
-                        <Image src={imgPath} alt={movie.overview} width={300} height={450}/>
+                        <Image src={imgPath} alt={movie.overview} width={300} height={450} />
+                        <button onClick={() => addMovie(movie)}>Add</button>
                     </div>
-             )})
-                
-             
+                    
+                    </>
+                )
+            })
+
+
         }
-        
+
         return (
             <>
-            <h1>Hallo!</h1>
-            {movies}
+                {movies}
             </>
         )
 
+
+    }
+
+    const Selected = selectedMovies.map((movie: SelectedMovie, index) => {
+        const imgPath = `https://image.tmdb.org/t/p/w300_and_h450_bestv2${movie.posterPath}`
+        return (
+
+            <div key={index}>
+                <Image src={imgPath} alt={movie.overview} width={300} height={450} />
+                <button onClick={() => removeMovie(movie.id)}>Remove</button>
+            </div>
+
+        )
+    }
+    )
+
+    const handleNextClick = () => {
+      router.push({pathname: `/select/[location]`, query : { location: nextCategory }});
+    };
+
+
+    return (
+    <div>
+        <h1>Movies</h1>
+        {selectedMovies.length ? <h2>Selected Movies</h2> : null }
+        <div className={styles.selectedMovies}>
+            {Selected}
+        </div>
+        <form onChange={handleFormChange} onSubmit={handleFormSubmit}>
+            <div className={styles.search}>
+            <label className={styles.input} htmlFor="movies">Search: </label>
+            <input id='movies' type="text" placeholder="Type your movie here..." defaultValue={formInputData} />
+            </div>
+        </form>
+        {selectedMovies.length === 5 ? <button onClick={handleNextClick}>Select your next Top 5...</button> : null}
+        <div className={styles.displayedMovies}>
+            <Movies />
+        </div>
         
-    } 
-        
-    
-   
-    
-  return(
-    <>
-    <h1>Movies</h1>
-    <form onChange={handleFormSubmit}>
-        <label htmlFor="movies">Search</label>
-        <input id='movies' type="text" placeholder="Type your movie here..." defaultValue={formInputData}/>
-    </form>
-    <Movies/>
-    </>
-  )
+    </div>
+    )
 }
+

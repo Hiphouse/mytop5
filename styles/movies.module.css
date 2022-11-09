@@ -1,0 +1,29 @@
+.movie {
+    width: 300px;
+    height: 100px;
+    border: 1px solid black;
+}
+
+.displayedMovies {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-gap: 1% 1%;
+    margin-top: 1%;
+}
+
+.selectedMovies {
+    display: flex;
+
+}
+
+.search {
+    text-align: center;
+    position: relative;
+    width:100%;
+}
+
+.input {
+    width: 100%;
+    margin-bottom: 1%;
+}
