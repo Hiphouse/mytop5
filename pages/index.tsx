@@ -2,10 +2,9 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import React, {useState, useEffect} from 'react';
-import Selections from './components/Selections'
-import MoviesSelect from './select/movies'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
+import Selections from './components/Selections';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function Home() {
   const [selectedCategories, setSelectedCategories] = useState({movies: false, 
@@ -61,9 +60,9 @@ export default function Home() {
   }
 
   const handleNextClick = () => {
-    console.log(selectedCategories)
+    // console.log(selectedCategories)
     const filteredCategories = Object.keys(selectedCategories).filter(category => selectedCategories[category as keyof typeof selectedCategories] === true)
-    console.log('filtered categories: ', filteredCategories)
+    // console.log('filtered categories: ', filteredCategories)
     
     router.push({pathname: `/select/[location]`, query : { location: filteredCategories[0] }})
     window.localStorage.setItem('categories', JSON.stringify(filteredCategories));
@@ -80,7 +79,7 @@ export default function Home() {
       </Head>
       <header>
         <div className={styles.login}>
-          <p>Already have a top 5? <a href="/login"><span id="loginLink">Login</span></a></p>
+          <p>Already have a top 5? <Link href="/login"><span id="loginLink">Login</span></Link></p>
         </div>
       </header>
       <Selections selectedCategories={selectedCategories} handleCategoryClick={handleCategoryClick}/>

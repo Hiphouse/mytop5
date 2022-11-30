@@ -194,6 +194,8 @@ export default function MoviesSelect(props: any) {
     )
 
     const handleNextClick = () => {
+        console.log('next click triggered')
+        console.log('nextCategory: ', nextCategory)
       router.push({pathname: `/select/[location]`, query : { location: nextCategory }});
     };
 
