@@ -1,3 +1,10 @@
+
+.movies {
+    background-color: rgb(50, 50, 50);
+    color: rgb(237, 233, 233);
+    padding: 0;
+}
+
 .movie {
     width: 300px;
     height: 100px;
@@ -6,24 +13,111 @@
 
 .displayedMovies {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 15vw));
+    grid-template-rows: repeat(auto-fit, minmax(320px, 15vh));
     grid-gap: 1% 1%;
-    margin-top: 1%;
+    margin: 1%;
+    position: relative;
+    
+}
+
+.displayedMovieCell {
+    position: relative;
+    min-width: 210px;
+    min-height: 320px;
+    width: 90%;
+    height: auto;
+    margin: 5px;
+    padding: 1%;
+}
+
+.displayedMoviesImage {
+    min-width: 210px;
+    min-height: 320px;
+    width: 100%;
+    height: auto;
+    position: relative;
+    border: 5px solid rgb(91, 112, 218);
+    border-radius: 5%;
+}
+
+.displayedMoviesImage:hover {
+    border: 5px solid rgb(103, 243, 9);
+    cursor: pointer;
+    z-index: 1;
+}
+
+.selectedMoviesContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    color: white;
+}
+
+.selectedMoviesContainer button {
+    margin: 10px;
+    min-width: 100px;
+    min-height: 40px;
+    font-size: 1.5rem;
+    color: rgb(255, 244, 244);
+    background-color: rgb(11, 219, 0);
+    border: 3px solid rgb(11, 219, 0);
+    box-shadow: 1;
+    border-radius: 1%;
 }
 
 .selectedMovies {
+    
     display: flex;
+    min-width: 820px;
+    max-width: 40%;
+    padding: 1% 10%;
+    justify-content: space-evenly;
+    border: 5px solid rgb(40, 80, 106);
+    border-radius: 1%;
+    margin: 1%;
+    background-color: rgb(207, 206, 211);
+    overflow: none;
+    
+}
+
+.selectedMovie {
+    border: 5px solid rgb(91, 112, 218);
+    border-radius: 5%;
+    margin: 0 5px;
+}
+
+.selectedMovie:hover {
+    
+    border: 5px solid rgb(243, 9, 9);
+    cursor: pointer;
+   
+    z-index: 1;
+    
 
 }
 
 .search {
-    text-align: center;
-    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width:100%;
+    color: white;
 }
 
-.input {
-    width: 100%;
-    margin-bottom: 1%;
+.search label {
+    width: 20px;
+    font-size: 1.75rem;
+    position: absolute;
+    z-index: 2;
+}
+
+.search input {
+    width: 42%;
+    height: 40px;
+    border-radius: 1%;
+    position: relative;
 }

@@ -28,6 +28,7 @@ interface SelectedMovie {
 
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
+
 export default function MoviesSelect(props: any) {
     const [formInputData, setFormInputData] = useState('');
     const [popularMovies, setPopularMovies] = useState<[]>([]);
@@ -159,9 +160,15 @@ export default function MoviesSelect(props: any) {
                 const imgPath = `https://image.tmdb.org/t/p/w300_and_h450_bestv2${movie.poster_path}`
                 return (
                     <>
-                    <div key={index}>
-                        <Image src={imgPath} alt={movie.overview} width={300} height={450} />
-                        <button onClick={() => addMovie(movie)}>Add</button>
+                    <div key={index} className={styles.displayedMovieCell}>
+                        <Image 
+                            src={imgPath} 
+                            alt={movie.overview} 
+                            fill
+                            className={styles.displayedMoviesImage} 
+                            onClick={() => addMovie(movie)}
+                            sizes="max-width: 200px"
+                        />
                     </div>
                     
                     </>
@@ -185,8 +192,7 @@ export default function MoviesSelect(props: any) {
         return (
 
             <div key={index}>
-                <Image src={imgPath} alt={movie.overview} width={300} height={450} />
-                <button onClick={() => removeMovie(movie.id)}>Remove</button>
+                <Image className={styles.selectedMovie} src={imgPath} alt={movie.overview} width={150} height={230} onClick={() => removeMovie(movie.id)}/>
             </div>
 
         )
@@ -201,19 +207,25 @@ export default function MoviesSelect(props: any) {
 
 
     return (
-    <div>
-        <h1>Movies</h1>
-        {selectedMovies.length ? <h2>Selected Movies</h2> : null }
-        <div className={styles.selectedMovies}>
-            {Selected}
-        </div>
+    <div className={styles.movies}>
+        <h1 style={{marginLeft: '20px', marginTop: '10px;'}}>Movies</h1>
+        {selectedMovies.length ? 
+            <div className={styles.selectedMoviesContainer}>
+                <h2>Selected Movies</h2>
+                <h3>Click a Movie to remove it from the list</h3>
+                <div className={styles.selectedMovies}>
+                    {Selected}
+                </div>
+                {selectedMovies.length === 5 ? <button onClick={handleNextClick}>Select your next Top 5...</button> : null}
+            </div> 
+        : null }
+        
         <form onChange={handleFormChange} onSubmit={handleFormSubmit}>
             <div className={styles.search}>
-            <label className={styles.input} htmlFor="movies">Search: </label>
-            <input id='movies' type="text" placeholder="Type your movie here..." defaultValue={formInputData} />
+            <label htmlFor="movies">Search: </label>
+            <input id='movies' type="text" placeholder="Search for your movie here..." defaultValue={formInputData} />
             </div>
         </form>
-        {selectedMovies.length === 5 ? <button onClick={handleNextClick}>Select your next Top 5...</button> : null}
         <div className={styles.displayedMovies}>
             <Movies />
         </div>
